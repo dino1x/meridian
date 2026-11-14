@@ -19,7 +19,7 @@ import {
 /// @notice Non-custodial automated epoch voter, bribe harvester & MUSD compounder for Mezo veBTC & veMEZO.
 /// @dev Users NEVER transfer their veBTC or veMEZO NFT. They retain custody in their wallet and approve
 ///      RelayVault via `ve.approve(address(relayVault), tokenId)` or `setApprovalForAll`.
-///      Includes a strict token whitelist on bribe swaps (fixing Perpetua's Wave 1 arbitrary-token bug)
+///      Includes a strict token whitelist on bribe swaps, so arbitrary reward tokens never reach the router
 ///      and Recovery-Mode-aware BorrowerOperations Trove debt auto-repayment.
 contract RelayVault {
     enum EscrowKind {

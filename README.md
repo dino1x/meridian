@@ -1,13 +1,13 @@
 # Meridian
 
-Meridian is a set of eight MUSD and MEZO products on Mezo, built as Solidity contracts plus one web app. Every module plugs into Mezo's own core contracts (BorrowerOperations, TroveManager, StabilityPool, sMUSD, SortedTroves, HintHelpers, Voter and BoostVoter) instead of running a separate system beside them.
+Meridian is a set of eight MUSD and MEZO products on Mezo, built as Solidity contracts plus one web app. Every module plugs into Mezo's own core contracts (BorrowerOperations, TroveManager, StabilityPool, sMUSD, SortedTroves, HintHelpers, PriceFeed, Voter, BoostVoter and the Tigris router) instead of running a separate system beside them.
 
 | Pillar | Module | What it does with MUSD / MEZO |
 | :--- | :--- | :--- |
 | Credit | **Autopay** | A per-user trove vault (EIP-1167 clone). Half its growth reserve sits in sMUSD and repays the trove's MUSD debt; the other half sits in the Stability Pool and compounds liquidation BTC back into the trove. |
-| Credit | **Drawdown** | Payroll streamed per second from a corporate BTC trove. MUSD is borrowed with `withdrawMUSD` only when a contributor claims, with an sMUSD fallback in Recovery Mode. |
+| Credit | **Drawdown** | Payroll streamed per second from a corporate BTC trove. MUSD is borrowed with `withdrawMUSD` only when a contributor claims. In Recovery Mode, or when the draw would take the trove within 15 points of Mezo's minimum ratio, the claim is paid from an sMUSD buffer instead. |
 | Yield | **Roost** | Principal-protected bonds on MUSD. Bonds accrue bMUSD on a hyperbolic curve (α = 15 days); chicken out for 100% of principal, or chicken in for bMUSD. |
-| Yield | **Chronos** | Splits sMUSD into fixed-maturity principal and yield tokens (30, 90, 180 days) and sets one fixed rate per tenor with a uniform-price batch auction. |
+| Yield | **Chronos** | Splits sMUSD into fixed-maturity principal and yield tokens (30, 90, 180 days). A batch auction fixes the rate per tenor: every crossing order fills at one uniform price, which is submitted when the auction is settled (see Known limitations). |
 | Peg | **PegKeeper** | A pooled vault that parks MUSD in sMUSD at the peg and runs hinted `redeemCollateral` arbitrage when MUSD trades below $1 minus the redemption fee. |
 | Peg | **Backstop** | A Stability Pool vault that sells seized BTC by Dutch auction (100% to 92% of the oracle over two hours) and re-deposits the MUSD proceeds. |
 | Governance | **Relay** | A non-custodial operator for veBTC and veMEZO: votes each epoch, harvests whitelisted bribes and routes them into MUSD. |
@@ -22,7 +22,7 @@ Meridian is a set of eight MUSD and MEZO products on Mezo, built as Solidity con
 | Mezo network data in the app | **Live reads** | Block height, BTC oracle price, Stability Pool deposits, sMUSD supply and yield index, MCR/CCR, trove count, Recovery Mode, borrowing and redemption rates, lowest-ICR trove, veBTC/veMEZO lock counts and BoostVoter gauges are read from `https://rpc.test.mezo.org`. Each read falls back independently; if the RPC is unreachable the header shows **Offline snapshot**. |
 | Wallet connection | **Real, with a demo fallback** | Uses an injected EIP-1193 wallet and switches it to Mezo Testnet. Without a browser wallet it uses a read-only demo address and says so in the activity log. |
 | On-chain actions in all eight modules | **Real transactions** | Each module has an "On Mezo Testnet" panel. With a browser wallet connected it approves MUSD only when needed, computes trove hints through Mezo's HintHelpers, sends the call, waits for confirmation, reads your position back and links the transaction in the explorer. Roost `createBond` / `chickenOut` / `chickenIn`; PegKeeper `deposit` / `withdraw`; Backstop `deposit`; KeeperGrid `postKeeperBond`; Chronos `mintPTAndYT`; Autopay `plantVault` / `openSelfPayingTrove` / `harvestAndStrengthen` / `rebalanceBand`; Drawdown `initializeCorporateTrove` / `createPayStream` (treasury admin only) and `claimPaySlip` (stream recipient); Relay ve `approve` + `registerFlightPlan`. |
-| Sample sections of every module | **Simulated in the browser** | Shown below a "Simulation with sample positions" divider, using the contracts' fee and parameter values so each flow can be shown without a wallet. Nothing there sends a transaction. |
+| Sample sections of every module | **Simulated in the browser** | Shown below a "Simulation with sample positions" divider. They model each module's rules and fee rates on sample positions so the flow can be shown without a wallet. Nothing there sends a transaction. |
 | Module header figures | **Live reads, with two exceptions** | Bonds issued and Roost buckets, vault assets and share prices, lots catalogued, active keepers and MUSD locked per Chronos series are read from the deployed contracts. Chronos fixed rates are sample auction fixings (no auction has cleared on-chain yet); the PegKeeper spot price is the simulated DEX slider. |
 | DEX price in PegKeeper | **Simulated** | The MUSD spot price is a slider, so the arbitrage path can be shown at any discount. |
 
@@ -133,5 +133,7 @@ Replace `DeployRoost` with `DeployAutopay`, `DeployDrawdown`, `DeployChronos`, `
 
 - Drawdown's payroll trove and streams can only be created by the treasury admin set at deployment; other wallets can only claim streams that pay them.
 - Relay needs a veBTC or veMEZO lock owned by the connected wallet.
+- Keeper-run steps are not triggered from the app: PegKeeper `executePegCalibration`, Backstop `catalogueLiquidationLot` / `strikeGavel`, Chronos `openAuction` / `placeSellOrder` / `placeBuyBid` / `settleAuction`, Relay `executeEpochRelay` and KeeperGrid `postSignalJob` / `executeSignalJob`. The app shows these mechanics in its simulation sections.
+- `BatchRateAuction.settleAuction` takes the clearing price from the caller and has no access control, so any address can settle an auction at any price within bounds. It needs an on-chain clearing-price computation or a restricted settler before mainnet.
 - You need test BTC (https://faucet.test.mezo.org) and test MUSD (borrow at https://testnet.mezo.org) in your wallet for the on-chain panels.
 - Contracts are unaudited and deployed on testnet only.

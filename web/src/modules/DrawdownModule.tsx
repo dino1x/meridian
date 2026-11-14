@@ -153,10 +153,12 @@ export function DrawdownModule({ onLogEvent, wallet = null }: { onLogEvent?: (ms
     const fee = claimGross * 0.005; // DrawdownDesk.CLEARING_FEE_BPS = 50 (0.50%)
     const netPay = claimGross - fee;
 
-    // Check if Normal Mode & post-withdrawal ICR >= 150% CCR -> JIT Trove Drawdown; else sMUSD Buffer!
+    // Mirrors DrawdownDesk.claimPaySlip: borrow just in time unless Recovery Mode, or the draw would take
+    // the trove below (MCR or CCR) + SAFETY_CUSHION_WAD (15 points); otherwise pay from the sMUSD buffer.
     const projectedIcr =
       (corpCollateralUsd / (entireDebtMusd + claimGross)) * 100;
-    const useJitTrove = !effectiveRecovery && projectedIcr >= telemetry.ccrPct;
+    const minSafeIcr = (effectiveRecovery ? telemetry.ccrPct : telemetry.mcrPct) + 15;
+    const useJitTrove = !effectiveRecovery && projectedIcr >= minSafeIcr;
 
     if (useJitTrove) {
       setDrawnMusdDebt((d) => d + claimGross);
@@ -214,7 +216,7 @@ export function DrawdownModule({ onLogEvent, wallet = null }: { onLogEvent?: (ms
     },
     {
       title: 'Recovery Mode falls back to sMUSD',
-      body: 'If Mezo is in Recovery Mode, or the draw would push ICR below 150%, the claim is paid from the sMUSD buffer instead.',
+      body: 'If Mezo is in Recovery Mode, or the draw would take the trove within 15 points of the minimum ratio (below 125% in Normal Mode), the claim is paid from the sMUSD buffer instead.',
     },
   ];
 
