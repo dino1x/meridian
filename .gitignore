@@ -16,3 +16,5 @@ contracts/broadcast/
 *.mp4
 !.env.example
 .vercel/
+.vite/
+web/.vite/

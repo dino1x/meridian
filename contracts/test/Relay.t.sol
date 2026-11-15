@@ -364,7 +364,7 @@ contract RelayTest is Test {
         assertEq(musd.balanceOf(alice), 682.5e18);
     }
 
-    function test_RevertsOnNonWhitelistedTokenProtectingAgainstPerpetuaBug() public {
+    function test_RevertsOnNonWhitelistedTokenProtectingAgainstArbitraryToken() public {
         vm.startPrank(alice);
         veMEZO.approve(address(relay), 99);
         uint256 planId = relay.registerFlightPlan(

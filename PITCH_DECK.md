@@ -8,7 +8,7 @@
 - **Protocol**: Meridian
 - **Tagline**: The Autonomous Financial Layer for Bitcoin on Mezo
 - **Mission**: Consolidate fragmented BTCFi primitives into a unified, self-repaying, capital-efficient liquidity stack.
-- **Traction**: 13 verified smart contracts on Mezo Testnet, 85 unit & fuzz tests passed, 8 composable modules.
+- **Traction**: 13 deployed smart contracts on Mezo Testnet, 85 unit & fuzz tests passed, 8 composable modules.
 
 ---
 
@@ -56,14 +56,14 @@ flowchart TD
 ---
 
 ## Slide 5: Core Value Proposition & Metrics
-- **Capital Efficiency**: 100% of collateral yield is productively deployed to amortize debt or compound rewards.
+- **Capital Efficiency**: 30% default growth reserve continuously amortizes trove debt and compounds Stability Pool BTC gains.
 - **Principal Protection**: Roost bonds allow 100% principal retrieval via chicken-out mechanism.
-- **Predictable Borrowing**: Chronos locks in fixed borrow rates across standard quarterly maturities.
+- **Predictable Borrowing**: Chronos fixes borrowing rates across 30D, 90D, and 180D maturities via uniform-clearing batch auctions.
 - **Network Resilience**: KeeperGrid aligns keeper economic incentives through staked sMUSD bond slashing.
 
 ---
 
-## Slide 6: Verified Testnet Deployments (Chain 31611)
+## Slide 6: Mezo Testnet Deployments (Chain 31611)
 - `AutopayFactory`: `0x0EAA0e96974CBD3169B060c7C121165D91820078`
 - `DrawdownDesk`: `0x0acaaD024c9d4729C6717B6429117d4aE66f9070`
 - `ChickenBondManager`: `0x528ADC9Ae5A430D0a53f711661F18A8C5831CaF6`
