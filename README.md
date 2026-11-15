@@ -46,6 +46,7 @@ These transactions were sent from a testnet-only wallet, `0xeD5313eB8Ad9ebE8c50A
 | Chronos: approve 200 MUSD | [`0x436e9c8e…51aafc`](https://explorer.test.mezo.org/tx/0x436e9c8efdc2d6448f87596f10110d13f2c6c9576e66bee1955c1180b051aafc) |
 | Chronos: `mintPTAndYT` 200 MUSD into the 90-day series | [`0xf8d7f852…98d510`](https://explorer.test.mezo.org/tx/0xf8d7f85275afb1678d54cdf05fbab46c2c44148c4c93971b337e11807f98d510) |
 | Autopay: `plantVault` (30% reserve, band 135%–220%) | [`0xa6087b48…00d35b`](https://explorer.test.mezo.org/tx/0xa6087b48075f6ec20dcb7b576a58f8747ab6b5688982e9c0965842cc2500d35b) |
+| Autopay: `openSelfPayingTrove` with 0.045 BTC, 1,800 MUSD (1,260 to the owner, 270 into sMUSD, 270 into the Stability Pool) | [`0x557808c6…da9e5b`](https://explorer.test.mezo.org/tx/0x557808c675e6e4040375435943194337cd1553113805befb1c408bccf4da9e5b) |
 | MEZO: approve 100 MEZO to veMEZO | [`0x0b3b4683…c3e22e`](https://explorer.test.mezo.org/tx/0x0b3b4683a15263546cd1bdeef7e23d0cd4e485c1e865ece006a3121e07c3e22e) |
 | veMEZO: `createLock` 100 MEZO for 4 weeks (veMEZO #958) | [`0x3c8c81a0…cf0c99`](https://explorer.test.mezo.org/tx/0x3c8c81a027cec2c081b5709a4f615099bd577ddcf8d33c561246529338cf0c99) |
 | Relay: approve RelayVault as operator on veMEZO #958 | [`0x1cc4850d…535deb`](https://explorer.test.mezo.org/tx/0x1cc4850da70f3583d9d6795b5e7845ae2792b73e33928d014bce94de6f535deb) |
@@ -54,7 +55,7 @@ These transactions were sent from a testnet-only wallet, `0xeD5313eB8Ad9ebE8c50A
 How the remaining flows were checked:
 
 - **Relay** also ran end to end in the app against a local fork of Mezo Testnet, acting as the owner of veBTC #1762.
-- **Autopay** `openSelfPayingTrove` and **Drawdown** `initializeCorporateTrove` / `createPayStream` pass as `eth_call` dry runs on Mezo Testnet with the exact arguments the app sends. A real run needs about 0.04 test BTC more in the wallet; Drawdown setup must come from the treasury admin `0x7B71B6186af01bF1DA9B091306FB911453389BE9`.
+- **Drawdown** `initializeCorporateTrove` / `createPayStream` pass as `eth_call` dry runs on Mezo Testnet with the exact arguments the app sends; they must be sent by the treasury admin `0x7B71B6186af01bF1DA9B091306FB911453389BE9`.
 - Trove-opening calls cannot run on a local fork because Mezo's price oracle is a chain precompile, which is why they were checked against the live chain.
 
 ## Deployed contracts (Mezo Testnet, chain 31611)
