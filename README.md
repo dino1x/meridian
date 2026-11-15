@@ -1,5 +1,7 @@
 # Meridian
 
+**Live app:** https://meridianmezo.vercel.app (Mezo Testnet, chain 31611)
+
 Meridian is a set of eight MUSD and MEZO products on Mezo, built as Solidity contracts plus one web app. Every module plugs into Mezo's own core contracts (BorrowerOperations, TroveManager, StabilityPool, sMUSD, SortedTroves, HintHelpers, PriceFeed, Voter, BoostVoter and the Tigris router) instead of running a separate system beside them.
 
 | Pillar | Module | What it does with MUSD / MEZO |
