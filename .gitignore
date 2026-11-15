@@ -18,3 +18,4 @@ contracts/broadcast/
 .vercel/
 .vite/
 web/.vite/
+gallery/
