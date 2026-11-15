@@ -244,9 +244,10 @@ function NavItem({ active, onClick, children }: { active: boolean; onClick: () =
 function MeridianMark() {
   return (
     <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
-      <circle cx="13" cy="13" r="12" fill="none" stroke="#E59A38" strokeWidth="1.5" />
-      <path d="M13 1v24" stroke="#E59A38" strokeWidth="1.5" />
-      <ellipse cx="13" cy="13" rx="5.5" ry="12" fill="none" stroke="#ECEEF1" strokeOpacity="0.6" strokeWidth="1" />
+      <ellipse cx="13" cy="13" rx="4.5" ry="9.5" fill="none" stroke="#ECEEF1" strokeOpacity="0.7" strokeWidth="1" />
+      <path d="M3.5 13h19" stroke="#9FC2FF" strokeWidth="1.2" />
+      <circle cx="13" cy="13" r="9.5" fill="none" stroke="#E59A38" strokeWidth="1.8" />
+      <path d="M13 1.5v23" stroke="#E59A38" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
 }
